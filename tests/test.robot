@@ -14,7 +14,7 @@ Robot Framework Basic Test
 Chrome Basic Test
     [Documentation]    Opens Chrome and verifies basic functionality
     [Tags]    basic    sanity    chrome
-    Open Chrome Navigator    google   
+    Open Chrome Navigator    google   True
     Go To    https://www.google.com/
     Wait Until Element Is Visible    xpath: //img[contains(@alt, 'Google')]    10
     Close Browser
