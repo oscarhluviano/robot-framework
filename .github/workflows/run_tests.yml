@@ -22,7 +22,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2 # Set up the Python environment
       with:
-        python-version: '3.x' # Specify the Python version to use
+        python-version: '3.9' # Specify the Python version to use
 
     - name: Install pipenv
       run: |
@@ -30,7 +30,7 @@ jobs:
         pip install pipenv # Install pipenv
 
     - name: Install dependencies
-      run: pipenv install --dev # Install dependencies from the Pipfile
+      run: pipenv install --dev --python 3.9 # Install dependencies from the Pipfile specifying Python 3.9
 
     - name: Install Chrome
       run: |
