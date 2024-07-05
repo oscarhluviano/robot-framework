@@ -41,5 +41,5 @@ jobs:
         sudo apt-get install -f # Fix broken dependencies, if any
 
     - name: Run Robot Framework tests
-      run: pipenv run robot -d output robot-framework/tests/test.robot # Run the Robot Framework tests and output results to the 'output' directory
+      run: pipenv run robot -d output tests/test.robot # Run the Robot Framework tests and output results to the 'output' directory
 
