@@ -49,4 +49,33 @@ jobs:
         name: robot-framework-test-results
         path: output/ # Specify the directory containing the test result files
 
+    - name: Create Test Execution in Jira
+      id: create-test-execution
+      run: |
+        TEST_EXEC_KEY=$(curl -u ${{ secrets.JIRA_USERNAME }}:${{ secrets.JIRA_API_TOKEN }} \
+          -H "Content-Type: application/json" \
+          -X POST \
+          -d '{
+            "fields": {
+              "project": {
+                "key": "${{ secrets.JIRA_PROJECT_KEY }}" # Replace with your Jira project key
+              },
+              "summary": "Automated Test Execution",
+              "description": "This test execution was created automatically",
+              "issuetype": {
+                "name": "Test Execution"
+              }
+            }
+          }' ${{ secrets.JIRA_BASE_URL }}/rest/api/2/issue | jq -r '.key')
+        echo "TEST_EXEC_KEY=$TEST_EXEC_KEY" >> $GITHUB_ENV
+
+    - name: Upload Robot Framework test results to Xray
+      run: |
+        curl -u ${{ secrets.JIRA_USERNAME }}:${{ secrets.JIRA_API_TOKEN }} \
+          -H "Content-Type: multipart/form-data" \
+          -F "file=@output/output.xml" \
+          -F "info=@output/report.html" \
+          -F "info=@output/log.html" \
+          "${{ secrets.JIRA_BASE_URL }}/rest/raven/1.0/import/execution/robot?testExecKey=$TEST_EXEC_KEY"
+
 
