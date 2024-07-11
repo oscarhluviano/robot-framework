@@ -52,9 +52,9 @@ jobs:
     - name: Upload Robot Framework test results to Xray
       uses: mikepenz/xray-action@v3.0.5
       with:
-        server: ${{ secrets.JIRA_BASE_URL }}
         username: ${{ secrets.JIRA_USERNAME }}
         password: ${{ secrets.JIRA_API_TOKEN }}
+        xrayBaseUrl: ${{ secrets.JIRA_API_TOKEN }}
         test_format: 'robot'
         test_paths: 'output/output.xml'
         project_key: ${{ secrets.JIRA_PROJECT_KEY }} # Replace with your Jira project key
