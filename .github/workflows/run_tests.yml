@@ -54,7 +54,7 @@ jobs:
       with:
         username: ${{ secrets.JIRA_USERNAME }}
         password: ${{ secrets.JIRA_API_TOKEN }}
-        xrayBaseUrl: ${{ secrets.JIRA_API_TOKEN }}
+        xrayBaseUrl: ${{ secrets.JIRA_BASE_URL }}
         testFormat: 'robot'
         testPaths: 'output/output.xml'
         projectKey: ${{ secrets.JIRA_PROJECT_KEY }} # Replace with your Jira project key
