@@ -53,37 +53,37 @@ jobs:
       run: |
           python -m pip install requests
           python << EOF
-import json
-import requests
-
-jira_base_url = '${{ secrets.JIRA_BASE_URL }}'
-personal_access_token = '${{ secrets.PERSONAL_ACCESS_TOKEN }}'
-project_key = '${{ secrets.JIRA_PROJECT_KEY }}'
-
-info_json = { 
-    'fields': {
-        'project': {
-            'key': project_key
-        },
-        'summary': 'Test Execution for RF execution',
-        'description': 'This contains test automation results',
-        'fixVersions': [ {'name': 'v1.0'}],
-        'customfield_11805': ['chrome'],
-        'customfield_11807': ['CALC-8895']
-    }
-}
-
-files = {
-    'file': ('robot.xml', open('output/output.xml', 'rb')),
-    'info': ('info.json', json.dumps(info_json))
-}
-
-headers = {'Authorization': 'Bearer ' + personal_access_token}
-response = requests.post(f'{jira_base_url}/rest/raven/2.0/import/execution/robot/multipart', files=files, headers=headers)
-
-print(response.status_code)
-print(response.content)
-EOF
+          import json
+          import requests
+          
+          jira_base_url = '${{ secrets.JIRA_BASE_URL }}'
+          personal_access_token = '${{ secrets.PERSONAL_ACCESS_TOKEN }}'
+          project_key = '${{ secrets.JIRA_PROJECT_KEY }}'
+          
+          info_json = { 
+              'fields': {
+                  'project': {
+                      'key': project_key
+                  },
+                  'summary': 'Test Execution for RF execution',
+                  'description': 'This contains test automation results',
+                  'fixVersions': [ {'name': 'v1.0'}],
+                  'customfield_11805': ['chrome'],
+                  'customfield_11807': ['CALC-8895']
+              }
+          }
+          
+          files = {
+              'file': ('robot.xml', open('output/output.xml', 'rb')),
+              'info': ('info.json', json.dumps(info_json))
+          }
+          
+          headers = {'Authorization': 'Bearer ' + personal_access_token}
+          response = requests.post(f'{jira_base_url}/rest/raven/2.0/import/execution/robot/multipart', files=files, headers=headers)
+          
+          print(response.status_code)
+          print(response.content)
+          EOF
 
     # - name: Upload Robot Framework test results to Xray
     #   uses: mikepenz/xray-action@v3.0.5
