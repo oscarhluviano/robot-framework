@@ -52,7 +52,7 @@ jobs:
     - name: Create Test Execution in Jira
       id: create-test-execution
       run: |
-        TEST_EXEC_KEY=$(curl -u ${{ secrets.JIRA_USERNAME }}:${{ secrets.JIRA_API_TOKEN }} \
+        RESPONSE=$(curl -u ${{ secrets.JIRA_USERNAME }}:${{ secrets.JIRA_API_TOKEN }} \
           -H "Content-Type: application/json" \
           -X POST \
           -d '{
@@ -66,7 +66,9 @@ jobs:
                 "name": "Test Execution"
               }
             }
-          }' ${{ secrets.JIRA_BASE_URL }}/rest/api/2/issue | jq -r '.key')
+          }' ${{ secrets.JIRA_BASE_URL }}/rest/api/2/issue)
+        echo "Response: $RESPONSE" # Print the response for debugging
+        TEST_EXEC_KEY=$(echo $RESPONSE | jq -r '.key')
         echo "TEST_EXEC_KEY=$TEST_EXEC_KEY" >> $GITHUB_ENV
 
     - name: Upload Robot Framework test results to Xray
@@ -76,6 +78,6 @@ jobs:
           -F "file=@output/output.xml" \
           -F "info=@output/report.html" \
           -F "info=@output/log.html" \
-          "${{ secrets.JIRA_BASE_URL }}/rest/raven/1.0/import/execution/robot?testExecKey=$TEST_EXEC_KEY"
+          "${{ secrets.JIRA_BASE_URL }}/rest/raven/1.0/import/execution/robot?testExecKey=${{ env.TEST_EXEC_KEY }}"
 
 
