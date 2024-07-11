@@ -50,15 +50,51 @@ jobs:
         path: output/ # Specify the directory containing the test result files
 
     - name: Upload Robot Framework test results to Xray
-      uses: mikepenz/xray-action@v3.0.5
-      with:
-        username: ${{ secrets.JIRA_USERNAME }}
-        password: ${{ secrets.JIRA_API_TOKEN }}
-        xrayBaseUrl: ${{ secrets.JIRA_BASE_URL }}
-        testFormat: 'robot'
-        testPaths: 'output/output.xml'
-        projectKey: ${{ secrets.JIRA_PROJECT_KEY }} # Replace with your Jira project key
-        xrayCloud: 'false' # Set cloud to false for Xray Server
+      run: |
+        python -m pip install requests # Install requests library
+        python -c "
+import json
+import requests
+
+jira_base_url = '${{ secrets.JIRA_BASE_URL }}'
+personal_access_token = '${{ secrets.PERSONAL_ACCESS_TOKEN }}'
+project_key = '${{ secrets.JIRA_PROJECT_KEY }}'
+
+info_json = { 
+    'fields': {
+        'project': {
+            'key': project_key
+        },
+        'summary': 'Test Execution for RF execution',
+        'description': 'This contains test automation results',
+        'fixVersions': [ {'name': 'v1.0'}],
+        'customfield_11805': ['chrome'],
+        'customfield_11807': ['CALC-8895']
+    }
+}
+
+files = {
+    'file': ('robot.xml', open('output/output.xml', 'rb')),
+    'info': ('info.json', json.dumps(info_json))
+}
+
+headers = {'Authorization': 'Bearer ' + personal_access_token}
+response = requests.post(f'{jira_base_url}/rest/raven/2.0/import/execution/robot/multipart', files=files, headers=headers)
+
+print(response.status_code)
+print(response.content)
+"
+
+    # - name: Upload Robot Framework test results to Xray
+    #   uses: mikepenz/xray-action@v3.0.5
+    #   with:
+    #     username: ${{ secrets.JIRA_USERNAME }}
+    #     password: ${{ secrets.JIRA_API_TOKEN }}
+    #     xrayBaseUrl: ${{ secrets.JIRA_BASE_URL }}
+    #     testFormat: 'robot'
+    #     testPaths: 'output/output.xml'
+    #     projectKey: ${{ secrets.JIRA_PROJECT_KEY }} # Replace with your Jira project key
+    #     xrayCloud: 'false' # Set cloud to false for Xray Server
 
     # - name: Create Test Execution in Jira
     #   id: create-test-execution
@@ -90,5 +126,4 @@ jobs:
     #       -F "info=@output/report.html" \
     #       -F "info=@output/log.html" \
     #       "${{ secrets.JIRA_BASE_URL }}/rest/raven/1.0/import/execution/robot?testExecKey=${{ env.TEST_EXEC_KEY }}"
-
-
+  
