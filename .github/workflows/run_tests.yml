@@ -51,13 +51,13 @@ jobs:
 
     - name: Upload Robot Framework test results to Xray
       run: |
-        python -m pip install requests # Install requests library
-        python -c "
+          python -m pip install requests
+          python << EOF
 import json
 import requests
 
 jira_base_url = '${{ secrets.JIRA_BASE_URL }}'
-personal_access_token = '${{ secrets.JIRA_API_TOKEN }}'
+personal_access_token = '${{ secrets.PERSONAL_ACCESS_TOKEN }}'
 project_key = '${{ secrets.JIRA_PROJECT_KEY }}'
 
 info_json = { 
@@ -83,7 +83,7 @@ response = requests.post(f'{jira_base_url}/rest/raven/2.0/import/execution/robot
 
 print(response.status_code)
 print(response.content)
-"
+EOF
 
     # - name: Upload Robot Framework test results to Xray
     #   uses: mikepenz/xray-action@v3.0.5
