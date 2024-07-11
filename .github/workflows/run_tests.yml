@@ -50,7 +50,7 @@ jobs:
         path: output/ # Specify the directory containing the test result files
 
     - name: Upload Robot Framework test results to Xray
-      uses: xray-app/xray-action@v1.2.0
+      uses: mikepenz/xray-action@{latest-release}
       with:
         server: ${{ secrets.JIRA_BASE_URL }}
         username: ${{ secrets.JIRA_USERNAME }}
