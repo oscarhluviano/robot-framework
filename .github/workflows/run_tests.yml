@@ -52,7 +52,7 @@ jobs:
     - name: Create Test Execution in Jira
       id: create-test-execution
       run: |
-        RESPONSE=$(curl -u ${{ secrets.JIRA_USERNAME }}:${{ secrets.JIRA_API_TOKEN }} \
+        RESPONSE=$(curl -L -u ${{ secrets.JIRA_USERNAME }}:${{ secrets.JIRA_API_TOKEN }} \
           -H "Content-Type: application/json" \
           -X POST \
           -d '{
