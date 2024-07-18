@@ -1,14 +1,14 @@
 name: Run Robot Framework Tests
 
 on:
-  schedule:
-    - cron: '0 18 * * *' # Schedule to run daily at 6 PM Central Time
-  push:
-    branches:
-      - main # Run on push events to the main branch
-  pull_request:
-    branches:
-      - main # Run on pull requests to the main branch
+  # schedule:
+  #   - cron: '0 18 * * *' # Schedule to run daily at 6 PM Central Time
+  # push:
+  #   branches:
+  #     - main # Run on push events to the main branch
+  # pull_request:
+  #   branches:
+  #     - main # Run on pull requests to the main branch
   workflow_dispatch: # Allow manual triggering of the workflow
 
 jobs:
@@ -66,10 +66,10 @@ jobs:
                       'key': project_key
                   },
                   'summary': 'Test Execution for RF execution',
-                  'description': 'This contains test automation results',
-                  'fixVersions': [ {'name': 'v1.0'}],
-                  'customfield_11805': ['chrome'],
-                  'customfield_11807': ['CALC-8895']
+                  'description': 'This contains test automation results'
+                  # 'fixVersions': [ {'name': 'v1.0'}],
+                  # 'customfield_11805': ['chrome'],
+                  # 'customfield_11807': ['CALC-8895']
               }
           }
           
