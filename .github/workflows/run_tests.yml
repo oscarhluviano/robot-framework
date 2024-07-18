@@ -57,7 +57,7 @@ jobs:
           import requests
           
           jira_base_url = '${{ secrets.JIRA_BASE_URL }}'
-          personal_access_token = '${{ secrets.PERSONAL_ACCESS_TOKEN }}'
+          personal_access_token = '${{ secrets.JIRA_API_TOKEN }}'
           project_key = '${{ secrets.JIRA_PROJECT_KEY }}'
           
           info_json = { 
