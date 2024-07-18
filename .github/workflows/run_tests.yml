@@ -49,41 +49,41 @@ jobs:
         name: robot-framework-test-results
         path: output/ # Specify the directory containing the test result files
 
-    - name: Upload Robot Framework test results to Xray
-      run: |
-          python -m pip install requests
-          python << EOF
-          import json
-          import requests
+    # - name: Upload Robot Framework test results to Xray
+    #   run: |
+    #       python -m pip install requests
+    #       python << EOF
+    #       import json
+    #       import requests
           
-          jira_base_url = '${{ secrets.JIRA_BASE_URL }}'
-          personal_access_token = '${{ secrets.PERSONAL_ACCESS_TOKEN }}'
-          project_key = '${{ secrets.JIRA_PROJECT_KEY }}'
+    #       jira_base_url = '${{ secrets.JIRA_BASE_URL }}'
+    #       personal_access_token = '${{ secrets.PERSONAL_ACCESS_TOKEN }}'
+    #       project_key = '${{ secrets.JIRA_PROJECT_KEY }}'
           
-          info_json = { 
-              'fields': {
-                  'project': {
-                      'key': project_key
-                  },
-                  'summary': 'Test Execution for RF execution',
-                  'description': 'This contains test automation results'
-                  # 'fixVersions': [ {'name': 'v1.0'}],
-                  # 'customfield_11805': ['chrome'],
-                  # 'customfield_11807': ['CALC-8895']
-              }
-          }
+    #       info_json = { 
+    #           'fields': {
+    #               'project': {
+    #                   'key': project_key
+    #               },
+    #               'summary': 'Test Execution for RF execution',
+    #               'description': 'This contains test automation results'
+    #               # 'fixVersions': [ {'name': 'v1.0'}],
+    #               # 'customfield_11805': ['chrome'],
+    #               # 'customfield_11807': ['CALC-8895']
+    #           }
+    #       }
           
-          files = {
-              'file': ('robot.xml', open('output/output.xml', 'rb')),
-              'info': ('info.json', json.dumps(info_json))
-          }
+    #       files = {
+    #           'file': ('robot.xml', open('output/output.xml', 'rb')),
+    #           'info': ('info.json', json.dumps(info_json))
+    #       }
           
-          headers = {'Authorization': 'Bearer ' + personal_access_token}
-          response = requests.post(f'{jira_base_url}/rest/raven/2.0/import/execution/robot/multipart', files=files, headers=headers)
+    #       headers = {'Authorization': 'Bearer ' + personal_access_token}
+    #       response = requests.post(f'{jira_base_url}/rest/raven/2.0/import/execution/robot/multipart', files=files, headers=headers)
           
-          print(response.status_code)
-          print(response.content)
-          EOF
+    #       print(response.status_code)
+    #       print(response.content)
+    #       EOF
 
     # - name: Upload Robot Framework test results to Xray
     #   uses: mikepenz/xray-action@v3.0.5
@@ -96,34 +96,34 @@ jobs:
     #     projectKey: ${{ secrets.JIRA_PROJECT_KEY }} # Replace with your Jira project key
     #     xrayCloud: 'false' # Set cloud to false for Xray Server
 
-    # - name: Create Test Execution in Jira
-    #   id: create-test-execution
-    #   run: |
-    #     RESPONSE=$(curl -L -u ${{ secrets.JIRA_USERNAME }}:${{ secrets.JIRA_API_TOKEN }} \
-    #       -H "Content-Type: application/json" \
-    #       -X POST \
-    #       -d '{
-    #         "fields": {
-    #           "project": {
-    #             "key": "${{ secrets.JIRA_PROJECT_KEY }}" # Replace with your Jira project key
-    #           },
-    #           "summary": "Automated Test Execution",
-    #           "description": "This test execution was created automatically",
-    #           "issuetype": {
-    #             "name": "Test Execution"
-    #           }
-    #         }
-    #       }' ${{ secrets.JIRA_BASE_URL }}/rest/api/2/issue)
-    #     echo "Response: $RESPONSE" # Print the response for debugging
-    #     TEST_EXEC_KEY=$(echo $RESPONSE | jq -r '.key')
-    #     echo "TEST_EXEC_KEY=$TEST_EXEC_KEY" >> $GITHUB_ENV
+    - name: Create Test Execution in Jira
+      id: create-test-execution
+      run: |
+        RESPONSE=$(curl -L -u ${{ secrets.JIRA_USERNAME }}:${{ secrets.JIRA_API_TOKEN }} \
+          -H "Content-Type: application/json" \
+          -X POST \
+          -d '{
+            "fields": {
+              "project": {
+                "key": "${{ secrets.JIRA_PROJECT_KEY }}" # Replace with your Jira project key
+              },
+              "summary": "Automated Test Execution",
+              "description": "This test execution was created automatically",
+              "issuetype": {
+                "name": "Test Execution"
+              }
+            }
+          }' ${{ secrets.JIRA_BASE_URL }}/rest/api/2/issue)
+        echo "Response: $RESPONSE" # Print the response for debugging
+        TEST_EXEC_KEY=$(echo $RESPONSE | jq -r '.key')
+        echo "TEST_EXEC_KEY=$TEST_EXEC_KEY" >> $GITHUB_ENV
 
-    # - name: Upload Robot Framework test results to Xray
-    #   run: |
-    #     curl -u ${{ secrets.JIRA_USERNAME }}:${{ secrets.JIRA_API_TOKEN }} \
-    #       -H "Content-Type: multipart/form-data" \
-    #       -F "file=@output/output.xml" \
-    #       -F "info=@output/report.html" \
-    #       -F "info=@output/log.html" \
-    #       "${{ secrets.JIRA_BASE_URL }}/rest/raven/1.0/import/execution/robot?testExecKey=${{ env.TEST_EXEC_KEY }}"
+    - name: Upload Robot Framework test results to Xray
+      run: |
+        curl -u ${{ secrets.JIRA_USERNAME }}:${{ secrets.JIRA_API_TOKEN }} \
+          -H "Content-Type: multipart/form-data" \
+          -F "file=@output/output.xml" \
+          -F "info=@output/report.html" \
+          -F "info=@output/log.html" \
+          "${{ secrets.JIRA_BASE_URL }}/rest/raven/1.0/import/execution/robot?testExecKey=${{ env.TEST_EXEC_KEY }}"
   
