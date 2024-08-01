@@ -38,3 +38,12 @@ jobs:
         echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
         sudo apt-get update
         sudo apt-get install -y google-chrome-stable
+
+    - name: Run Robot Framework tests
+      run: pipenv run robot -d output tests/test.robot # Run the Robot Framework tests and output results to the 'output' directory
+
+    - name: Upload Robot Framework test results
+      uses: actions/upload-artifact@v2 # Upload test results as artifacts
+      with:
+        name: robot-framework-test-results
+        path: output/ # Specify the directory containing the test result files
