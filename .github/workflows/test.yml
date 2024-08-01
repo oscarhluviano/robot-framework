@@ -31,9 +31,9 @@ jobs:
       run: pipenv install --dev --python 3.9 # Install dependencies from the Pipfile specifying Python 3.9
 
     - name: Install Chrome dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wget apt-transport-https ca-certificates gnupg
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y wget apt-transport-https ca-certificates gnupg
 
     - name: Add Google Chrome repository
       run: |
